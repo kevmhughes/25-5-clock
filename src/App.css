@@ -1,8 +1,26 @@
 body {
   background-color: #1d555c;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  justify-content: center;
+}
+.app-container {
+  display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .break-and-session-length-container {
- display:flex;
+  display: flex;
+  gap: 50px;
+  margin-bottom: 30px;
+}
+.break-length-labels {
+  font-size: 30px;
+}
+.break-length-numbers {
+  font-size: 30px;
 }
 .break-inner-container {
   display: flex;
@@ -12,4 +30,31 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.session-inner-container {
+  display: flex;
+  gap: 10px;
+}
+.session-outer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.clock-container {
+  border: 8px solid #13353A;
+    width: 250px;
+    height: 150px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.timer-label {
+  font-size: 25px;
+  margin-top: 15px;
+}
+.time-left {
+  font-size: 70px;
+  margin-top: -15px;
 }
