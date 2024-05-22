@@ -1,0 +1,15 @@
+body {
+  background-color: #1d555c;
+}
+.break-and-session-length-container {
+ display:flex;
+}
+.break-inner-container {
+  display: flex;
+  gap: 10px;
+}
+.break-outer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
