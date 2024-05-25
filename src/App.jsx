@@ -4,8 +4,14 @@ import "./App.css";
 function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [sessionLength, setSessionLength] = useState(25);
+  // controls minutes of the timer
   const [timeLeftMinutes, setTimeLeftMinutes] = useState(25);
+  // controls seconds of the timer
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(60);
+
+  if (timeLeftMinutes < 10) {
+    document.querySelector("#time-left-minutes").textContent = "0" + timeLeftMinutes
+  }
 
   // sets seconds to 60
   let seconds = timeLeftSeconds;
@@ -30,6 +36,7 @@ function App() {
       seconds = timeLeftSeconds;
       secondsField.textContent = "00";
     }
+    ZeroInFrontOfMinutesWhenLessThan10() 
   }
 
   // reduces timer of the clock by one every 60,000 ms (60 secs)
@@ -37,46 +44,43 @@ function App() {
     let minutes = document.querySelector("#time-left-minutes").textContent;
     minutes -= 1;
     document.querySelector("#time-left-minutes").textContent = minutes;
+
   }
 
- // is invoked when the timer reaches 0:00 & sets timer to previously chosen session length
+  // is invoked when the timer reaches 0:00 & sets timer to previously chosen session length
   function stopTheTimer() {
     clearInterval(ticker);
     clearInterval(ticker2);
     ticker = null;
     ticker2 = null;
-    document.querySelector("#time-left-minutes").textContent =
-      sessionLength;
-    document.querySelector("#time-left-seconds").textContent =
-      "00";
+    document.querySelector("#time-left-minutes").textContent = sessionLength;
+    document.querySelector("#time-left-seconds").textContent = "00";
   }
 
-   // is invoked when the user presses reset & sets the timer to 25:00
+  // is invoked when the user presses reset & sets the timer to 25:00
   function resetTheTimer() {
     clearInterval(ticker);
     clearInterval(ticker2);
     ticker = null;
     ticker2 = null;
-    document.querySelector("#time-left-minutes").textContent =
-      "25";
-    document.querySelector("#time-left-seconds").textContent =
-      "00";
+    document.querySelector("#time-left-minutes").textContent = "25";
+    document.querySelector("#time-left-seconds").textContent = "00";
   }
 
   // stops the timer when it reaches 0:00
   function stopTheTimerAt00() {
     if (
-      document.querySelector("#time-left-minutes").textContent == "0" &&
+      document.querySelector("#time-left-minutes").textContent == "00" &&
       document.querySelector("#time-left-seconds").textContent == "00"
     ) {
-      stopTheTimer()
+      stopTheTimer();
     }
   }
 
   // starts seconds timer & stops the timer on click
   function startTimer() {
     reduceSeconds();
-    stopTheTimerAt00()
+    stopTheTimerAt00();
   }
 
   // starts minutes timer on click
@@ -93,6 +97,16 @@ function App() {
     ) {
       document.querySelector("#time-left-minutes").textContent =
         timeLeftMinutes - 1;
+    }
+  }
+
+  function ZeroInFrontOfMinutesWhenLessThan10() {
+    if (document.querySelector("#time-left-minutes").textContent < 10) {
+      document.querySelector("#time-left-minutes").textContent = `0${timeLeftMinutes - 1}`;
+    }
+
+    if (document.querySelector("#time-left-minutes").textContent < 10 && document.querySelector("#time-left-minutes").textContent.length == 2) {
+      console.log("hello")
     }
   }
 
@@ -115,17 +129,18 @@ function App() {
     }
   };
 
-    // handles resetting of the timer to the default session length (25) and to the default break length (5) onClick of the reset button
+  // handles resetting of the timer to the default session length (25) and to the default break length (5) onClick of the reset button
   const handleReset = () => {
     setBreakLength(5);
     setSessionLength(25);
-    resetTheTimer()
+    resetTheTimer();
+    document.querySelector("#add-zero").textContent = null
   };
 
   const handleBreakDecrement = () => {
     setBreakLength(breakLength - 1);
-    if (breakLength == 0) {
-      setBreakLength(0);
+    if (breakLength == 1) {
+      setBreakLength(1);
     }
   };
 
@@ -138,18 +153,43 @@ function App() {
 
   const handleSessionDecrement = () => {
     setSessionLength(sessionLength - 1);
-    setTimeLeftMinutes(timeLeftMinutes - 1);
-    if (timeLeftMinutes == 1) {
+    
+    if (timeLeftMinutes > 10) {
+      setTimeLeftMinutes(timeLeftMinutes - 1);
+      document.querySelector("#add-zero").textContent = ""
+    } else if (timeLeftMinutes == 1) {
       setTimeLeftMinutes(1);
-    }
+    } else {
+      document.querySelector("#add-zero").textContent = 0
+      setTimeLeftMinutes(timeLeftMinutes - 1);
+    } 
+
     if (sessionLength == 1) {
       setSessionLength(1);
+
     }
+    
+    console.log("dec", timeLeftMinutes, typeof timeLeftMinutes)
+
   };
 
   const handleSessionIncrement = () => {
     setSessionLength(sessionLength + 1);
-    setTimeLeftMinutes(timeLeftMinutes + 1);
+    
+    /*   CONTINUE FROM HERE */
+    if (timeLeftMinutes < 9) {
+      document.querySelector("#add-zero").textContent = 0
+      setTimeLeftMinutes(timeLeftMinutes + 1);
+    } else {
+      setTimeLeftMinutes(timeLeftMinutes + 1);
+      document.querySelector("#add-zero").textContent = null
+    }
+    
+
+    console.log("incText", document.querySelector("#add-zero").textContent)
+    console.log("incSpan", document.querySelector("#add-zero"))
+    console.log("inc", timeLeftMinutes, typeof timeLeftMinutes)
+    
     if (sessionLength == 60) {
       setSessionLength(60);
     }
@@ -203,8 +243,8 @@ function App() {
             Session
           </div>
           <div id="time-left" className="time-left">
-            <span id="time-left-minutes">{timeLeftMinutes}</span><span></span>
-            :<span id="time-left-seconds">00</span>
+            <span id="add-zero"></span><span id="time-left-minutes">{timeLeftMinutes}</span>
+            <span>:</span><span id="time-left-seconds">00</span>
           </div>
         </div>
         <div>
