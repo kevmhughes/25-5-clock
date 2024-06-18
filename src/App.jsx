@@ -4,257 +4,182 @@ import "./App.css";
 function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [sessionLength, setSessionLength] = useState(25);
-  // controls minutes of the timer
-  const [timeLeftMinutes, setTimeLeftMinutes] = useState(25);
-  // controls seconds of the timer
-  const [timeLeftSeconds, setTimeLeftSeconds] = useState(60);
 
-  if (timeLeftMinutes < 10) {
-    document.querySelector("#time-left-minutes").textContent = "0" + timeLeftMinutes
-  }
+  // variable associated with setInterval
+  let tickerSeconds;
 
-  // sets seconds to 60
-  let seconds = timeLeftSeconds;
-  // setInterval variables
-  let ticker;
-  let ticker2;
-
-
-  /*  reduces seconds of the timer by one every 1000 ms (1 sec), puts a zero before numbers (0)9 and below & resets seconds to 60 when the textContent of the seconds field reaches 00 */
-  function reduceSeconds() {
-    let secondsField = document.querySelector("#time-left-seconds");
-    seconds -= 1;
-    secondsField.textContent = seconds;
-
-    // puts a zero before numbers (0)9 and below
-    if (seconds < 10) {
-      secondsField.textContent = "0" + seconds;
-    }
-
-    // resets seconds to 60 when the textContent of the seconds field reaches 00
-    if (secondsField.textContent == "00") {
-      seconds = timeLeftSeconds;
-      secondsField.textContent = "00";
-    }
-    ZeroInFrontOfMinutesWhenLessThan10() 
-  }
-
-  // reduces timer of the clock by one every 60,000 ms (60 secs)
-  function reduceMinutes() {
-    let minutes = document.querySelector("#time-left-minutes").textContent;
-    minutes -= 1;
-    document.querySelector("#time-left-minutes").textContent = minutes;
-
-  }
-
-  // is invoked when the timer reaches 0:00 & sets timer to previously chosen session length
-  function stopTheTimer() {
-    clearInterval(ticker);
-    clearInterval(ticker2);
-    ticker = null;
-    ticker2 = null;
-    document.querySelector("#time-left-minutes").textContent = sessionLength;
-    document.querySelector("#time-left-seconds").textContent = "00";
-  }
-
-  // is invoked when the user presses reset & sets the timer to 25:00
-  function resetTheTimer() {
-    clearInterval(ticker);
-    clearInterval(ticker2);
-    ticker = null;
-    ticker2 = null;
-    document.querySelector("#time-left-minutes").textContent = "25";
-    document.querySelector("#time-left-seconds").textContent = "00";
-  }
-
-  // stops the timer when it reaches 0:00
-  function stopTheTimerAt00() {
-    if (
-      document.querySelector("#time-left-minutes").textContent == "00" &&
-      document.querySelector("#time-left-seconds").textContent == "00"
-    ) {
-      stopTheTimer();
+  // reduces seconds on timer, and adds a zero from 9 - 0
+  function reduceSecondsOnTimer() {
+    let seconds = document.querySelector("#seconds").textContent;
+    if (seconds == 0o0) {
+      seconds = 59;
+      reduceMinutesOnTimer()
+      document.querySelector("#seconds").textContent = seconds;
+      // setSessionLength(sessionLength - 1);
+      console.log(seconds);
+    } else if (seconds <= 59 && seconds > 10) {
+      seconds -= 1;
+      document.querySelector("#seconds").textContent = seconds;
+      console.log(seconds);
+    } else if (seconds <= 10 && seconds > 0) {
+      seconds -= 1;
+      document.querySelector("#seconds").textContent = "0" + seconds;
+      console.log("0" + seconds);
     }
   }
+ 
+  // reduces minutes on timer, and adds a zero from 9 - 0
+  function reduceMinutesOnTimer() {
+    let seconds = document.querySelector("#seconds").textContent;
+    let minutes = document.querySelector("#minutes").textContent;
+    let timerLabel = document.querySelector("#timer-label").textContent
 
-  // starts seconds timer & stops the timer on click
-  function startTimer() {
-    reduceSeconds();
-    stopTheTimerAt00();
-  }
 
-  // starts minutes timer on click
-  function startTimerTwo() {
-    reduceMinutes();
-  }
-
-  // reduces the minutes by one on starting the timer, so that 25:00 becomes 24:59 after one second and not 25:59
-  function reduceMinutesByOneOnStartTimer() {
-    if (
-      document.querySelector("#time-left-minutes").textContent ==
-        timeLeftMinutes &&
-      document.querySelector("#time-left-seconds").textContent == "00"
-    ) {
-      document.querySelector("#time-left-minutes").textContent =
-        timeLeftMinutes - 1;
-    }
-  }
-
-  function ZeroInFrontOfMinutesWhenLessThan10() {
-    if (document.querySelector("#time-left-minutes").textContent < 10) {
-      document.querySelector("#time-left-minutes").textContent = `0${timeLeftMinutes - 1}`;
+    if (seconds == "00" && minutes == "0") {
+      document.querySelector("#timer-label").textContent = "Break"
+      document.querySelector("#minutes").textContent = breakLength
+      if (timerLabel == "Break" && minutes <= 60 && minutes > 10) {
+        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
+      } else if (minutes <= 10) {
+        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
+        document.querySelector("#extra-number").textContent = "0";
+      } else if (seconds == "00" && minutes == "0") 
+        clearInterval(tickerSeconds);
+        handlesReset()
+       /*  document.querySelector("#seconds").textContent == "00" */
     }
 
-    if (document.querySelector("#time-left-minutes").textContent < 10 && document.querySelector("#time-left-minutes").textContent.length == 2) {
-      console.log("hello")
-    }
-  }
+    if (seconds == "00" && timerLabel == "Session") {
+      if (minutes <= 60 && minutes > 10) {
+        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
+      } else if (minutes <= 10) {
+        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
+        document.querySelector("#extra-number").textContent = "0";
+      } else if (minutes <= 0 && seconds == "00") {
+        document.querySelector("#timer-label").textContent = "Break"
+      } 
+      console.log("change here or not:", document.querySelector("#timer-label").textContent )
+    } 
+  } 
 
-  // handles onClick of the start/stop button
-  const handleStartStop = () => {
-    setTimeout(reduceMinutesByOneOnStartTimer, 1000);
-
-    if (!ticker) {
-      ticker = setInterval(startTimer, 1000);
-    } else if (ticker) {
-      clearInterval(ticker);
-      ticker = null;
-    }
-
-    if (!ticker2) {
-      ticker2 = setInterval(startTimerTwo, 60000);
-    } else if (ticker2) {
-      clearInterval(ticker2);
-      ticker2 = null;
+  // starts and stops the seconds timer
+  const handlesStartStop = () => {
+    if (!tickerSeconds) {
+      tickerSeconds = setInterval(reduceSecondsOnTimer, 1000);
+    } else {
+      clearInterval(tickerSeconds);
+      tickerSeconds = false;
     }
   };
 
-  // handles resetting of the timer to the default session length (25) and to the default break length (5) onClick of the reset button
-  const handleReset = () => {
+  // resets the break and sesson length, resets seconds to 00 and stops the seconds timer (clears setInterval)
+  function handlesReset() {
     setBreakLength(5);
     setSessionLength(25);
-    resetTheTimer();
-    document.querySelector("#add-zero").textContent = null
-  };
+    document.querySelector("#extra-number").textContent = "";
+    document.querySelector("#seconds").textContent = "00";
+    document.querySelector("#minutes").textContent = sessionLength;
+    document.querySelector("#timer-label").textContent = "Session"
+    clearInterval(tickerSeconds);
+    tickerSeconds = false;
+  }
 
-  const handleBreakDecrement = () => {
+  // reduces break length by 1, but does not allow 0 to be chosen
+  function handlesBreakDecrement() {
     setBreakLength(breakLength - 1);
-    if (breakLength == 1) {
+    if (breakLength <= 1) {
       setBreakLength(1);
     }
-  };
+  }
 
-  const handleBreakIncrement = () => {
+  // increases break length by 1, but stops at 60
+  function handlesBreakIncrement() {
     setBreakLength(breakLength + 1);
-    if (breakLength == 60) {
+    if (breakLength >= 60) {
       setBreakLength(60);
     }
-  };
+  }
 
-  const handleSessionDecrement = () => {
-    setSessionLength(sessionLength - 1);
-    
-    if (timeLeftMinutes > 10) {
-      setTimeLeftMinutes(timeLeftMinutes - 1);
-      document.querySelector("#add-zero").textContent = ""
-    } else if (timeLeftMinutes == 1) {
-      setTimeLeftMinutes(1);
-    } else {
-      document.querySelector("#add-zero").textContent = 0
-      setTimeLeftMinutes(timeLeftMinutes - 1);
-    } 
-
-    if (sessionLength == 1) {
-      setSessionLength(1);
-
+  // decreases session length by 1, and also adds a 0 in front of the number between 9 and 1. It also does not allow the session length to be set to 0
+  function handlesSessionDecrement() {
+    clearInterval(tickerSeconds);
+    tickerSeconds = false;
+    document.querySelector("#seconds").textContent = "00";
+    if (sessionLength > 10 && sessionLength <= 60) {
+      setSessionLength(sessionLength - 1);
     }
-    
-    console.log("dec", timeLeftMinutes, typeof timeLeftMinutes)
+    else if (sessionLength <= 10 && sessionLength > 1 ) {
+      setSessionLength(sessionLength - 1);
+      document.querySelector("#extra-number").textContent = "0";
+    }
+    else if (sessionLength <= 1) {
+      document.querySelector("#extra-number").textContent = "0";
+      document.querySelector("#minutes").textContent = "1";
+    }
+  }
 
-  };
-
-  const handleSessionIncrement = () => {
+   // increases session length by 1, but stops at 60
+  function handlesSessionIncrement() {
     setSessionLength(sessionLength + 1);
-    
-    /*   CONTINUE FROM HERE */
-    if (timeLeftMinutes < 9) {
-      document.querySelector("#add-zero").textContent = 0
-      setTimeLeftMinutes(timeLeftMinutes + 1);
-    } else {
-      setTimeLeftMinutes(timeLeftMinutes + 1);
-      document.querySelector("#add-zero").textContent = null
-    }
-    
-
-    console.log("incText", document.querySelector("#add-zero").textContent)
-    console.log("incSpan", document.querySelector("#add-zero"))
-    console.log("inc", timeLeftMinutes, typeof timeLeftMinutes)
-    
-    if (sessionLength == 60) {
+    if (sessionLength >= 60) {
       setSessionLength(60);
     }
-  };
-
-  // https://www.freecodecamp.org/learn/front-end-development-libraries/front-end-development-libraries-projects/build-a-25--5-clock
+  }
 
   return (
     <>
-      <div className="app-container">
-        <h1>25 + 5 Clock</h1>
-        <div className="break-and-session-length-container">
-          <div className="break-outer-container">
-            <div id="break-label" className="break-length-labels">
+      <div className="container">
+        <h1 className="title">25 + 5 Clock</h1>
+
+        <div className="break-and-session-length-boxes-container">
+          <div className="break-length-container">
+            <div id="break-label" className="break-length-title">
               Break Length
             </div>
-            <div className="break-inner-container">
-              <div onClick={handleBreakDecrement} id="break-decrement">
-                &#8681;
+            <div className="break-length-controls-container">
+              <div id="break-decrement" onClick={handlesBreakDecrement}>
+                -
               </div>
-              <div id="break-length" className="break-length-numbers">
-                {breakLength}
-              </div>
-              <div onClick={handleBreakIncrement} id="break-increment">
-                &#8679;
+              <div id="break-length">{breakLength}</div>
+              <div id="break-increment" onClick={handlesBreakIncrement}>
+                +
               </div>
             </div>
           </div>
-          <div className="session-outer-container">
-            <div id="session-label" className="break-length-labels">
+
+          <div className="session-length-container">
+            <div id="session-label" className="session-length-title">
               Session Length
             </div>
-            <div>
-              <div className="session-inner-container">
-                <div onClick={handleSessionDecrement} id="session-decrement">
-                  &#8681;
-                </div>
-                <div id="session-length" className="break-length-numbers">
-                  {sessionLength}
-                </div>
-                <div onClick={handleSessionIncrement} id="session-increment">
-                  &#8679;
-                </div>
+            <div className="session-length-controls-container">
+              <div id="session-decrement" onClick={handlesSessionDecrement}>
+                -
+              </div>
+              <div id="session-length">{sessionLength}</div>
+              <div id="session-increment" onClick={handlesSessionIncrement}>
+                +
               </div>
             </div>
           </div>
         </div>
 
-        <div className="clock-container">
-          <div id="timer-label" className="timer-label">
-            Session
+        <div className="timer-container">
+          <div>
+            <div id="timer-label">Session</div>
+            <div id="time-left">
+              <span id="extra-number"></span>
+              <span id="minutes">{sessionLength}</span>:
+              <span id="seconds">00</span>
+            </div>
           </div>
-          <div id="time-left" className="time-left">
-            <span id="add-zero"></span><span id="time-left-minutes">{timeLeftMinutes}</span>
-            <span>:</span><span id="time-left-seconds">00</span>
+          <div>
+            <div id="start_stop" onClick={handlesStartStop}>
+              play/pause
+            </div>
+            <div id="reset" onClick={handlesReset}>
+              reset
+            </div>
           </div>
-        </div>
-        <div>
-          <div id="start_stop" className="start-stop" onClick={handleStartStop}>
-            start/stop
-          </div>
-          <div id="reset" className="reset" onClick={handleReset}>
-            reset
-          </div>
-          <div></div>
         </div>
       </div>
     </>
