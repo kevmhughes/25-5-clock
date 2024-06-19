@@ -11,56 +11,61 @@ function App() {
   // reduces seconds on timer, and adds a zero from 9 - 0
   function reduceSecondsOnTimer() {
     let seconds = document.querySelector("#seconds").textContent;
-    if (seconds == 0o0) {
+    if (seconds == "00") {
       seconds = 59;
-      reduceMinutesOnTimer()
+      reduceMinutesOnTimer();
       document.querySelector("#seconds").textContent = seconds;
-      // setSessionLength(sessionLength - 1);
-      console.log(seconds);
     } else if (seconds <= 59 && seconds > 10) {
       seconds -= 1;
       document.querySelector("#seconds").textContent = seconds;
-      console.log(seconds);
     } else if (seconds <= 10 && seconds > 0) {
       seconds -= 1;
       document.querySelector("#seconds").textContent = "0" + seconds;
-      console.log("0" + seconds);
     }
   }
- 
+
   // reduces minutes on timer, and adds a zero from 9 - 0
   function reduceMinutesOnTimer() {
     let seconds = document.querySelector("#seconds").textContent;
     let minutes = document.querySelector("#minutes").textContent;
-    let timerLabel = document.querySelector("#timer-label").textContent
+    let timerLabel = document.querySelector("#timer-label").textContent;
 
-
-    if (seconds == "00" && minutes == "0") {
-      document.querySelector("#timer-label").textContent = "Break"
-      document.querySelector("#minutes").textContent = breakLength
-      if (timerLabel == "Break" && minutes <= 60 && minutes > 10) {
-        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
-      } else if (minutes <= 10) {
-        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
+    // break timer
+    if (
+      document.querySelector("#timer-label").textContent == "Break"
+    ) {
+      if (minutes <= 60 && minutes > 10) {
+        document.querySelector("#minutes").textContent =
+          document.querySelector("#minutes").textContent - 1;
+      } else if (minutes <= 10 && minutes > 0) {
+        document.querySelector("#minutes").textContent =
+          document.querySelector("#minutes").textContent - 1;
         document.querySelector("#extra-number").textContent = "0";
-      } else if (seconds == "00" && minutes == "0") 
-        clearInterval(tickerSeconds);
-        handlesReset()
-       /*  document.querySelector("#seconds").textContent == "00" */
+      } else if (seconds == 0o0 && minutes == 0) {
+        document.querySelector("#timer-label").textContent = "Session";
+        document.querySelector("#minutes").textContent = sessionLength;
+        document.querySelector("#seconds").textContent = "00";
+        document.querySelector("#beep").play()
+      }
     }
 
+    // session timer
     if (seconds == "00" && timerLabel == "Session") {
       if (minutes <= 60 && minutes > 10) {
-        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
-      } else if (minutes <= 10) {
-        document.querySelector("#minutes").textContent = document.querySelector("#minutes").textContent - 1
+        document.querySelector("#minutes").textContent =
+          document.querySelector("#minutes").textContent - 1;
+      } else if (minutes <= 10 && minutes > 0) {
+        document.querySelector("#minutes").textContent =
+          document.querySelector("#minutes").textContent - 1;
         document.querySelector("#extra-number").textContent = "0";
       } else if (minutes <= 0 && seconds == "00") {
-        document.querySelector("#timer-label").textContent = "Break"
-      } 
-      console.log("change here or not:", document.querySelector("#timer-label").textContent )
-    } 
-  } 
+        document.querySelector("#timer-label").textContent = "Break";
+        document.querySelector("#minutes").textContent = breakLength;
+        document.querySelector("#seconds").textContent = "00";
+        document.querySelector("#beep").play()
+      }
+    }
+  }
 
   // starts and stops the seconds timer
   const handlesStartStop = () => {
@@ -79,9 +84,11 @@ function App() {
     document.querySelector("#extra-number").textContent = "";
     document.querySelector("#seconds").textContent = "00";
     document.querySelector("#minutes").textContent = sessionLength;
-    document.querySelector("#timer-label").textContent = "Session"
+    document.querySelector("#timer-label").textContent = "Session";
     clearInterval(tickerSeconds);
     tickerSeconds = false;
+    document.querySelector("#beep").pause()
+    document.querySelector("#beep").currentTime = 0
   }
 
   // reduces break length by 1, but does not allow 0 to be chosen
@@ -107,23 +114,33 @@ function App() {
     document.querySelector("#seconds").textContent = "00";
     if (sessionLength > 10 && sessionLength <= 60) {
       setSessionLength(sessionLength - 1);
-    }
-    else if (sessionLength <= 10 && sessionLength > 1 ) {
+    } else if (sessionLength <= 10 && sessionLength > 1) {
       setSessionLength(sessionLength - 1);
       document.querySelector("#extra-number").textContent = "0";
-    }
-    else if (sessionLength <= 1) {
+    } else if (sessionLength <= 1) {
       document.querySelector("#extra-number").textContent = "0";
       document.querySelector("#minutes").textContent = "1";
     }
   }
 
-   // increases session length by 1, but stops at 60
+  // increases session length by 1, but stops at 60
   function handlesSessionIncrement() {
-    setSessionLength(sessionLength + 1);
+    clearInterval(tickerSeconds);
+    tickerSeconds = false;
+    document.querySelector("#seconds").textContent = "00";
     if (sessionLength >= 60) {
       setSessionLength(60);
-    }
+    } else if (sessionLength >= 9 && sessionLength < 60) {
+      setSessionLength(sessionLength + 1);
+      document.querySelector("#extra-number").textContent = "";
+    } else if (sessionLength <= 10 && sessionLength > 0) {
+      setSessionLength(sessionLength + 1);
+      document.querySelector("#extra-number").textContent = "0";
+    } 
+  }
+
+  function playAudio() {
+    document.querySelector("audio").autoPlay = true
   }
 
   return (
@@ -181,6 +198,9 @@ function App() {
             </div>
           </div>
         </div>
+
+      <audio src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav" id="beep" ></audio>
+
       </div>
     </>
   );
