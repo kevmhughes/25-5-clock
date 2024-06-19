@@ -31,9 +31,7 @@ function App() {
     let timerLabel = document.querySelector("#timer-label").textContent;
 
     // break timer
-    if (
-      document.querySelector("#timer-label").textContent == "Break"
-    ) {
+    if (document.querySelector("#timer-label").textContent == "Break") {
       if (minutes <= 60 && minutes > 10) {
         document.querySelector("#minutes").textContent =
           document.querySelector("#minutes").textContent - 1;
@@ -43,9 +41,9 @@ function App() {
         document.querySelector("#extra-number").textContent = "0";
       } else if (seconds == 0o0 && minutes == 0) {
         document.querySelector("#timer-label").textContent = "Session";
-        document.querySelector("#minutes").textContent = sessionLength;
+        document.querySelector("#minutes").textContent = sessionLength - 1;
         document.querySelector("#seconds").textContent = "00";
-        document.querySelector("#beep").play()
+        document.querySelector("#beep").play();
       }
     }
 
@@ -60,9 +58,9 @@ function App() {
         document.querySelector("#extra-number").textContent = "0";
       } else if (minutes <= 0 && seconds == "00") {
         document.querySelector("#timer-label").textContent = "Break";
-        document.querySelector("#minutes").textContent = breakLength;
+        document.querySelector("#minutes").textContent = breakLength - 1;
         document.querySelector("#seconds").textContent = "00";
-        document.querySelector("#beep").play()
+        document.querySelector("#beep").play();
       }
     }
   }
@@ -87,8 +85,8 @@ function App() {
     document.querySelector("#timer-label").textContent = "Session";
     clearInterval(tickerSeconds);
     tickerSeconds = false;
-    document.querySelector("#beep").pause()
-    document.querySelector("#beep").currentTime = 0
+    document.querySelector("#beep").pause();
+    document.querySelector("#beep").currentTime = 0;
   }
 
   // reduces break length by 1, but does not allow 0 to be chosen
@@ -136,11 +134,7 @@ function App() {
     } else if (sessionLength <= 10 && sessionLength > 0) {
       setSessionLength(sessionLength + 1);
       document.querySelector("#extra-number").textContent = "0";
-    } 
-  }
-
-  function playAudio() {
-    document.querySelector("audio").autoPlay = true
+    }
   }
 
   return (
@@ -155,11 +149,11 @@ function App() {
             </div>
             <div className="break-length-controls-container">
               <div id="break-decrement" onClick={handlesBreakDecrement}>
-                -
+                &#11015;
               </div>
               <div id="break-length">{breakLength}</div>
               <div id="break-increment" onClick={handlesBreakIncrement}>
-                +
+                &#11014;
               </div>
             </div>
           </div>
@@ -170,18 +164,18 @@ function App() {
             </div>
             <div className="session-length-controls-container">
               <div id="session-decrement" onClick={handlesSessionDecrement}>
-                -
+                &#11015;
               </div>
               <div id="session-length">{sessionLength}</div>
               <div id="session-increment" onClick={handlesSessionIncrement}>
-                +
+                &#11014;
               </div>
             </div>
           </div>
         </div>
 
         <div className="timer-container">
-          <div>
+          <div className="timer-inner-container">
             <div id="timer-label">Session</div>
             <div id="time-left">
               <span id="extra-number"></span>
@@ -189,18 +183,20 @@ function App() {
               <span id="seconds">00</span>
             </div>
           </div>
-          <div>
+          <div className="play-pause-reset-container">
             <div id="start_stop" onClick={handlesStartStop}>
-              play/pause
+              &#9199;
             </div>
             <div id="reset" onClick={handlesReset}>
-              reset
+              &#8634;
             </div>
           </div>
         </div>
 
-      <audio src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav" id="beep" ></audio>
-
+        <audio
+          src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+          id="beep"
+        ></audio>
       </div>
     </>
   );

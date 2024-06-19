@@ -21,11 +21,20 @@ body {
 .break-and-session-length-boxes-container {
   display: flex;
   gap: 30px;
+  font-size: 2rem;
+}
+
+#break-decrement,
+#break-increment,
+#session-decrement,
+#session-increment {
+  cursor: pointer;
 }
 
 .break-length-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .break-length-controls-container {
@@ -36,6 +45,7 @@ body {
 .session-length-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .session-length-controls-container {
@@ -47,4 +57,54 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.timer-inner-container {
+  border: 8px solid #133338;
+  border-radius: 50px;
+  padding: 1rem;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#timer-label {
+  font-size: 2rem;
+}
+
+#time-left {
+  font-size: 6rem;
+}
+
+.play-pause-reset-container {
+  display: flex;
+  gap: 10px;
+  font-size: 40px;
+}
+
+#start-stop {
+  cursor: pointer;
+}
+
+#reset {
+  cursor: pointer;
+}
+
+@media (max-width: 950px) {
+  .title {
+    font-size: 40px;
+  }
+
+  .break-and-session-length-boxes-container {
+    font-size: 1.5rem;
+  }
+
+  .timer-inner-container {
+    width: 250px;
+  }
+
+  #time-left {
+    font-size: 5rem;
+  }
 }
