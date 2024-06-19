@@ -75,7 +75,7 @@ function App() {
     }
   };
 
-  // resets the break and sesson length, resets seconds to 00 and stops the seconds timer (clears setInterval)
+  // resets the break and session length, resets seconds to 00 and stops the seconds timer (clears setInterval)
   function handlesReset() {
     setBreakLength(5);
     setSessionLength(25);
@@ -105,7 +105,7 @@ function App() {
     }
   }
 
-  // decreases session length by 1, and also adds a 0 in front of the number between 9 and 1. It also does not allow the session length to be set to 0
+  // decreases session length by 1, and also adds a 0 in front of the numbers between 9 and 1. It also does not allow the session length to be set to 0
   function handlesSessionDecrement() {
     clearInterval(tickerSeconds);
     tickerSeconds = false;
